@@ -15,20 +15,54 @@ class _ScanResultPageState extends State<ScanResultPage> {
 
   double fontSize = 22;
   double speechRate = 0.45;
-  bool boldText = false;
+
+  // ✅ bold ON by default
+  bool boldText = true;
+
   Color backgroundColor = Colors.white;
+
+  int highlightedWordIndex = -1;
+  bool isReading = false;
+
+  late List<String> words;
 
   @override
   void initState() {
     super.initState();
+
+    words = widget.text.split(RegExp(r'\s+'));
+
     _tts.setLanguage("en-US");
+    _tts.setPitch(1.0);
     _tts.setSpeechRate(speechRate);
   }
 
   Future<void> _readAloud() async {
+    if (isReading) return;
+
+    setState(() {
+      isReading = true;
+      highlightedWordIndex = -1;
+    });
+
     await _tts.stop();
     await _tts.setSpeechRate(speechRate);
-    await _tts.speak(widget.text);
+
+    for (int i = 0; i < words.length; i++) {
+      if (!mounted) return;
+
+      setState(() => highlightedWordIndex = i);
+
+      await _tts.speak(words[i]);
+      await Future.delayed(
+        Duration(milliseconds: (650 / speechRate).toInt()),
+      );
+    }
+
+    setState(() {
+      highlightedWordIndex = -1;
+      isReading = false;
+    });
   }
 
   @override
@@ -37,28 +71,37 @@ class _ScanResultPageState extends State<ScanResultPage> {
       appBar: AppBar(
         title: const Text("Readable Text"),
       ),
-
-      // 🔴 IMPORTANT FIX: Expanded + ScrollView
       body: Column(
         children: [
+          // ---------- TEXT AREA ----------
           Expanded(
             child: Container(
               color: backgroundColor,
               padding: const EdgeInsets.all(16),
               child: SingleChildScrollView(
-                child: Text(
-                  widget.text,
-                  style: TextStyle(
-                    fontSize: fontSize,
-                    fontWeight: boldText ? FontWeight.bold : FontWeight.normal,
-                    height: 1.6,
-                  ),
+                child: Wrap(
+                  spacing: 4,
+                  runSpacing: 6,
+                  children: List.generate(words.length, (index) {
+                    final isHighlighted = index == highlightedWordIndex;
+
+                    return Text(
+                      words[index],
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight:
+                            boldText ? FontWeight.bold : FontWeight.normal,
+                        backgroundColor:
+                            isHighlighted ? Colors.yellowAccent : null,
+                      ),
+                    );
+                  }),
                 ),
               ),
             ),
           ),
 
-          // ---------- Controls ----------
+          // ---------- CONTROLS ----------
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Column(
@@ -71,9 +114,7 @@ class _ScanResultPageState extends State<ScanResultPage> {
                         min: 16,
                         max: 36,
                         value: fontSize,
-                        onChanged: (v) {
-                          setState(() => fontSize = v);
-                        },
+                        onChanged: (v) => setState(() => fontSize = v),
                       ),
                     ),
                   ],
@@ -83,11 +124,12 @@ class _ScanResultPageState extends State<ScanResultPage> {
                     const Text("Reading Speed"),
                     Expanded(
                       child: Slider(
-                        min: 0.2,
+                        min: 0.25,
                         max: 0.8,
                         value: speechRate,
                         onChanged: (v) {
                           setState(() => speechRate = v);
+                          _tts.setSpeechRate(v);
                         },
                       ),
                     ),
@@ -96,9 +138,7 @@ class _ScanResultPageState extends State<ScanResultPage> {
                 SwitchListTile(
                   title: const Text("Bold text"),
                   value: boldText,
-                  onChanged: (v) {
-                    setState(() => boldText = v);
-                  },
+                  onChanged: (v) => setState(() => boldText = v),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
