@@ -1,22 +1,24 @@
-cat <<EOF > .gitignore
 # Flutter
-/build/
-/.dart_tool/
-/.flutter-plugins
+build/
+.dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 
+# Android
+android/.gradle/
+android/local.properties
+android/key.properties
+android/app/*.keystore
+
+# iOS / macOS
+ios/Pods/
+ios/.symlinks/
+macos/Pods/
+
 # IDE
-.idea/
 .vscode/
+.idea/
 
 # OS
 .DS_Store
 
-# Android
-/android/.gradle
-/android/local.properties
-
-# iOS
-/ios/Pods/
-/ios/.symlinks/
-EOF
