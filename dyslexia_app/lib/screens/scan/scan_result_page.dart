@@ -35,34 +35,20 @@ class _ScanResultPageState extends State<ScanResultPage> {
     _tts.setLanguage("en-US");
     _tts.setPitch(1.0);
     _tts.setSpeechRate(speechRate);
+    _tts.awaitSpeakCompletion(true);
   }
 
   Future<void> _readAloud() async {
-    if (isReading) return;
-
-    setState(() {
-      isReading = true;
-      highlightedWordIndex = -1;
-    });
-
-    await _tts.stop();
-    await _tts.setSpeechRate(speechRate);
-
     for (int i = 0; i < words.length; i++) {
       if (!mounted) return;
 
       setState(() => highlightedWordIndex = i);
 
-      await _tts.speak(words[i]);
-      await Future.delayed(
-        Duration(milliseconds: (650 / speechRate).toInt()),
-      );
+      await _tts.stop(); // clear previous
+      await _tts.speak(words[i]); // waits until spoken
     }
 
-    setState(() {
-      highlightedWordIndex = -1;
-      isReading = false;
-    });
+    setState(() => highlightedWordIndex = -1);
   }
 
   @override
