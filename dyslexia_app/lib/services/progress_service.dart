@@ -1,23 +1,22 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProgressService {
-  static String _key(String levelId) => "level_${levelId}_done_words";
+  static const String _key = 'completed_words';
 
-  static Future<Set<String>> getDoneWords(String levelId) async {
+  static Future<Set<String>> getCompletedWords() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(_key(levelId))?.toSet() ?? {};
+    return prefs.getStringList(_key)?.toSet() ?? {};
   }
 
-  static Future<void> markWordDone(String levelId, String word) async {
+  static Future<void> markCompleted(String word) async {
     final prefs = await SharedPreferences.getInstance();
-    final done = await getDoneWords(levelId);
-    done.add(word);
-    await prefs.setStringList(_key(levelId), done.toList());
+    final completed = prefs.getStringList(_key)?.toSet() ?? {};
+    completed.add(word);
+    await prefs.setStringList(_key, completed.toList());
   }
 
-  static Future<bool> isLevelComplete(
-      String levelId, List<String> allWords) async {
-    final done = await getDoneWords(levelId);
-    return done.length == allWords.length;
+  static Future<bool> isCompleted(String word) async {
+    final completed = await getCompletedWords();
+    return completed.contains(word);
   }
 }

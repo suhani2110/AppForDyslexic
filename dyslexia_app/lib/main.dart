@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/home/home_page.dart';
+import 'screens/landing/dashboard_page.dart';
 
 void main() {
   runApp(const DyslexiaApp());
@@ -17,7 +17,7 @@ class DyslexiaApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const DashboardPage(), // ✅ correct
     );
   }
 }

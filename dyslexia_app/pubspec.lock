@@ -168,6 +168,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.1"
+  google_mlkit_digital_ink_recognition:
+    dependency: "direct main"
+    description:
+      name: google_mlkit_digital_ink_recognition
+      sha256: "289e10da258f37c72a093a89d12b436f7df33cedf3cf5e144774503143178557"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.12.1"
   google_mlkit_text_recognition:
     dependency: "direct main"
     description:

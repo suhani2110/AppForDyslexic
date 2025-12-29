@@ -1,29 +1,44 @@
 import 'package:flutter/material.dart';
 import '../../services/tts_service.dart';
+import '../../services/progress_service.dart';
 import '../../widgets/canvas/drawing_canvas.dart';
 
 class WordPracticePage extends StatefulWidget {
   final String word;
 
-  const WordPracticePage({
-    super.key,
-    required this.word,
-  });
+  const WordPracticePage({super.key, required this.word});
 
   @override
   State<WordPracticePage> createState() => _WordPracticePageState();
 }
 
 class _WordPracticePageState extends State<WordPracticePage> {
-  // ✅ SINGLE TTS INSTANCE (NO DELAY)
   final TtsService _tts = TtsService();
 
-  // UI states
   Color backgroundColor = Colors.white;
+  bool completed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProgress();
+  }
+
+  Future<void> _loadProgress() async {
+    completed = await ProgressService.isCompleted(widget.word);
+    setState(() {});
+  }
+
+  Future<void> _markCompleted() async {
+    if (completed) return;
+
+    await ProgressService.markCompleted(widget.word);
+    setState(() => completed = true);
+  }
 
   @override
   void dispose() {
-    _tts.stop(); // safety cleanup
+    _tts.stop();
     super.dispose();
   }
 
@@ -32,38 +47,33 @@ class _WordPracticePageState extends State<WordPracticePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.word),
+        actions: [
+          Icon(
+            completed ? Icons.check_circle : Icons.circle_outlined,
+            color: completed ? Colors.green : Colors.grey,
+          ),
+          const SizedBox(width: 12),
+        ],
       ),
       body: Container(
         color: backgroundColor,
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ---------- WORD DISPLAY ----------
-            Center(
-              child: Text(
-                widget.word,
-                style: const TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                ),
+            // WORD
+            Text(
+              widget.word,
+              style: const TextStyle(
+                fontSize: 42,
+                fontWeight: FontWeight.bold,
               ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // ---------- HEAR PRONUNCIATION ----------
-            ElevatedButton.icon(
-              onPressed: () => _tts.speak(widget.word),
-              icon: const Icon(Icons.volume_up),
-              label: const Text("Hear Pronunciation"),
             ),
 
             const SizedBox(height: 12),
 
-            // ---------- BACKGROUND COLOR OPTIONS ----------
+            // BACKGROUND COLORS
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _colorButton(Colors.white),
                 _colorButton(Colors.yellow.shade100),
@@ -72,29 +82,30 @@ class _WordPracticePageState extends State<WordPracticePage> {
               ],
             ),
 
+            const SizedBox(height: 16),
+
+            // TTS
+            ElevatedButton.icon(
+              icon: const Icon(Icons.volume_up),
+              label: const Text("Hear Pronunciation"),
+              onPressed: () => _tts.speak(widget.word),
+            ),
+
             const SizedBox(height: 20),
 
-            // ---------- WRITING CANVAS ----------
             const Text(
-              "Write the word below:",
-              style: TextStyle(fontSize: 18),
+              "Write the word:",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
+
             const SizedBox(height: 8),
 
-            const DrawingCanvas(),
-
-            const Spacer(),
-
-            // ---------- SUBMIT (LOGIC LATER) ----------
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Submission logic coming next"),
-                  ),
-                );
-              },
-              child: const Text("Submit"),
+            // ✅ CANVAS (FIXED)
+            Expanded(
+              child: DrawingCanvas(
+                targetWord: widget.word,
+                onCorrect: _markCompleted,
+              ),
             ),
           ],
         ),
@@ -106,8 +117,9 @@ class _WordPracticePageState extends State<WordPracticePage> {
     return GestureDetector(
       onTap: () => setState(() => backgroundColor = color),
       child: Container(
-        width: 36,
-        height: 36,
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        width: 30,
+        height: 30,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(6),
