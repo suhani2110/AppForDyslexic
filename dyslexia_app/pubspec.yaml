@@ -17,6 +17,9 @@ dependencies:
   image_picker: ^1.0.7
   google_mlkit_text_recognition: ^0.13.1
   google_mlkit_commons: ^0.8.1
+  # record: ^5.0.4
+  path_provider: ^2.1.2
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -27,6 +30,7 @@ flutter:
 
   assets:
     - assets/fonts/
+    - assets/data/levels.json
 
   fonts:
     - family: null

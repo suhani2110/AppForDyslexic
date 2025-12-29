@@ -5,10 +5,10 @@ class OcrService {
   final TextRecognizer _recognizer =
       TextRecognizer(script: TextRecognitionScript.latin);
 
-  Future<String> extractText(File imageFile) async {
-    final inputImage = InputImage.fromFile(imageFile);
-    final RecognizedText result = await _recognizer.processImage(inputImage);
-    return result.text;
+  Future<String> recognizeTextFromFile(File file) async {
+    final inputImage = InputImage.fromFile(file);
+    final result = await _recognizer.processImage(inputImage);
+    return result.text.toLowerCase().trim();
   }
 
   void dispose() {

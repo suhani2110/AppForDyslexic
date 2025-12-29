@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'core/routes.dart';
+import 'screens/home/home_page.dart';
 
 void main() {
   runApp(const DyslexiaApp());
@@ -11,10 +11,13 @@ class DyslexiaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'App For Dyslexic',
       debugShowCheckedModeBanner: false,
-      routes: AppRoutes.routes,
+      title: 'Dyslexia App',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: Colors.blue,
+      ),
+      home: const HomePage(),
     );
   }
 }
-

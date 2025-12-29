@@ -1,0 +1,664 @@
+[
+  {
+    "level_id": 1,
+    "difficulty": "BEGINNER",
+    "phonics_rule": "Short vowel 'a' sound in consonant-vowel-consonant words",
+    "word_pattern": "CVC",
+    "words": [
+      "Bat",
+      "cat",
+      "fan",
+      "hat",
+      "jam",
+      "lap",
+      "mad",
+      "map",
+      "man",
+      "pad",
+      "rag",
+      "ran",
+      "sap",
+      "tap",
+      "van"
+    ]
+  },
+  {
+    "level_id": 2,
+    "difficulty": "BEGINNER",
+    "phonics_rule": "Short vowel 'i' sound in consonant-vowel-consonant words",
+    "word_pattern": "CVC",
+    "words": [
+      "big",
+      "dig",
+      "pig",
+      "wig",
+      "zip",
+      "lip",
+      "tip",
+      "hit",
+      "sit",
+      "fit",
+      "kid",
+      "lid",
+      "mix",
+      "six",
+      "tin"
+    ]
+  },
+  {
+    "level_id": 3,
+    "difficulty": "BEGINNER",
+    "phonics_rule": "Short vowel 'o' sound in consonant-vowel-consonant words",
+    "word_pattern": "CVC",
+    "words": [
+      "dog",
+      "mom",
+      "top",
+      "hop",
+      "jog",
+      "log",
+      "fog",
+      "cot",
+      "dot",
+      "cob",
+      "pod",
+      "mop",
+      "hog",
+      "nod",
+      "pop"
+    ]
+  },
+  {
+    "level_id": 4,
+    "difficulty": "BEGINNER",
+    "phonics_rule": "Short vowel 'e' sound in consonant-vowel-consonant words",
+    "word_pattern": "CVC",
+    "words": [
+      "bed",
+      "ten",
+      "jet",
+      "net",
+      "red",
+      "pen",
+      "men",
+      "hen",
+      "wet",
+      "pet",
+      "leg",
+      "beg",
+      "fed",
+      "get",
+      "wed"
+    ]
+  },
+  {
+    "level_id": 5,
+    "difficulty": "BEGINNER",
+    "phonics_rule": "Short vowel 'u' sound in consonant-vowel-consonant words",
+    "word_pattern": "CVC",
+    "words": [
+      "cub",
+      "tub",
+      "sub",
+      "mud",
+      "bug",
+      "hug",
+      "mug",
+      "rug",
+      "jug",
+      "gum",
+      "fun",
+      "run",
+      "sun",
+      "cut",
+      "nut"
+    ]
+  },
+  {
+    "level_id": 6,
+    "difficulty": "BEGINNER",
+    "phonics_rule": "Initial consonant blends with 'l' (bl, cl, fl, gl, pl)",
+    "word_pattern": "CCVC",
+    "words": [
+      "blab",
+      "bled",
+      "blip",
+      "blot",
+      "clam",
+      "clap",
+      "clip",
+      "clog",
+      "flag",
+      "flip",
+      "flop",
+      "glad",
+      "glob",
+      "plan",
+      "plug"
+    ]
+  },
+  {
+    "level_id": 7,
+    "difficulty": "BEGINNER",
+    "phonics_rule": "Initial consonant blends with 'r' (br, cr, dr, fr, gr, tr)",
+    "word_pattern": "CCVC",
+    "words": [
+      "brag",
+      "bran",
+      "brim",
+      "crib",
+      "crop",
+      "cram",
+      "drag",
+      "drip",
+      "frog",
+      "fret",
+      "grab",
+      "grin",
+      "grip",
+      "trap",
+      "trot"
+    ]
+  },
+  {
+    "level_id": 8,
+    "difficulty": "BEGINNER",
+    "phonics_rule": "Initial consonant blends with 's' (st, sp, sl, sn)",
+    "word_pattern": "CCVC",
+    "words": [
+      "stag",
+      "step",
+      "stop",
+      "stun",
+      "stub",
+      "stem",
+      "spam",
+      "spot",
+      "spud",
+      "spit",
+      "slam",
+      "sled",
+      "slip",
+      "slop",
+      "snag"
+    ]
+  },
+  {
+    "level_id": 9,
+    "difficulty": "EARLY",
+    "phonics_rule": "Final consonant blends (nd, nt, mp, st)",
+    "word_pattern": "CVCC",
+    "words": [
+      "hand",
+      "sand",
+      "bend",
+      "land",
+      "tent",
+      "hunt",
+      "rent",
+      "jump",
+      "lamp",
+      "camp",
+      "fast",
+      "best"
+    ]
+  },
+  {
+    "level_id": 10,
+    "difficulty": "EARLY",
+    "phonics_rule": "Consonant digraph 'sh'",
+    "word_pattern": "CVC or CVCC",
+    "words": [
+      "fish",
+      "dish",
+      "wish",
+      "shop",
+      "shed",
+      "rush",
+      "hush",
+      "push",
+      "cash",
+      "lash",
+      "mesh",
+      "shot"
+    ]
+  },
+  {
+    "level_id": 11,
+    "difficulty": "EARLY",
+    "phonics_rule": "Consonant digraph 'ch'",
+    "word_pattern": "CVC or CVCC",
+    "words": [
+      "chip",
+      "chop",
+      "chat",
+      "chin",
+      "much",
+      "such",
+      "rich",
+      "lunch",
+      "fetch",
+      "pitch",
+      "latch",
+      "chunk"
+    ]
+  },
+  {
+    "level_id": 12,
+    "difficulty": "EARLY",
+    "phonics_rule": "Consonant digraph 'th' (voiceless)",
+    "word_pattern": "CVC or CVCC",
+    "words": [
+      "thin",
+      "thud",
+      "think",
+      "thick",
+      "thank",
+      "bath",
+      "math",
+      "moth",
+      "path",
+      "cloth",
+      "froth",
+      "fifth"
+    ]
+  },
+  {
+    "level_id": 13,
+    "difficulty": "EARLY",
+    "phonics_rule": "Consonant digraph 'wh'",
+    "word_pattern": "CVC",
+    "words": [
+      "what",
+      "when",
+      "wham",
+      "whip",
+      "whet",
+      "whop",
+      "whiz",
+      "whack",
+      "whiff",
+      "whir",
+      "whim",
+      "whap"
+    ]
+  },
+  {
+    "level_id": 14,
+    "difficulty": "EARLY",
+    "phonics_rule": "Consonant digraph 'ck' at word endings",
+    "word_pattern": "CVCC",
+    "words": [
+      "back",
+      "pack",
+      "sack",
+      "neck",
+      "deck",
+      "pick",
+      "kick",
+      "sick",
+      "lock",
+      "rock",
+      "duck",
+      "luck"
+    ]
+  },
+  {
+    "level_id": 15,
+    "difficulty": "EARLY",
+    "phonics_rule": "Long vowel sound using silent 'e' (a_e)",
+    "word_pattern": "CVCe",
+    "words": [
+      "cake",
+      "bake",
+      "make",
+      "name",
+      "game",
+      "save",
+      "wave",
+      "face",
+      "late",
+      "date",
+      "tape",
+      "rake"
+    ]
+  },
+  {
+    "level_id": 16,
+    "difficulty": "EARLY",
+    "phonics_rule": "Long vowel sound using silent 'e' (i_e)",
+    "word_pattern": "CVCe",
+    "words": [
+      "make",
+      "cake",
+      "late",
+      "tape",
+      "time",
+      "five",
+      "kite",
+      "mine",
+      "home",
+      "bone",
+      "note",
+      "cube"
+    ]
+  },
+  {
+    "level_id": 17,
+    "difficulty": "EARLY",
+    "phonics_rule": "Long vowel sound using silent 'e' (o_e)",
+    "word_pattern": "CVCe",
+    "words": [
+      "bone",
+      "code",
+      "cope",
+      "dome",
+      "hope",
+      "mode",
+      "note",
+      "poke",
+      "pole",
+      "robe",
+      "rode",
+      "vote"
+    ]
+  },
+  {
+    "level_id": 18,
+    "difficulty": "EARLY",
+    "phonics_rule": "Long vowel sound using silent 'e' (u_e)",
+    "word_pattern": "CVCe",
+    "words": [
+      "cube",
+      "tube",
+      "rule",
+      "huge",
+      "pure",
+      "mute",
+      "fume",
+      "mule",
+      "rude",
+      "tune",
+      "cure",
+      "fuse"
+    ]
+  },
+  {
+    "level_id": 19,
+    "difficulty": "EARLY",
+    "phonics_rule": "Vowel team 'ai' for long a sound",
+    "word_pattern": "CVVC",
+    "words": [
+      "rain",
+      "pail",
+      "sail",
+      "mail",
+      "tail",
+      "wait",
+      "laid",
+      "paid",
+      "gain",
+      "bait",
+      "pain",
+      "fail"
+    ]
+  },
+  {
+    "level_id": 20,
+    "difficulty": "EARLY",
+    "phonics_rule": "Vowel team 'oa' for long o sound",
+    "word_pattern": "CVVC",
+    "words": [
+      "boat",
+      "coat",
+      "goat",
+      "road",
+      "toad",
+      "load",
+      "loaf",
+      "coal",
+      "foam",
+      "soak",
+      "moan",
+      "boar"
+    ]
+  },
+  {
+    "level_id": 21,
+    "difficulty": "EARLY",
+    "phonics_rule": "Vowel team 'ee' for long e sound",
+    "word_pattern": "CVVC",
+    "words": [
+      "seed",
+      "keep",
+      "deep",
+      "feel",
+      "feet",
+      "meet",
+      "teen",
+      "jeep",
+      "beep",
+      "weep",
+      "seem",
+      "weed"
+    ]
+  },
+  {
+    "level_id": 22,
+    "difficulty": "EARLY",
+    "phonics_rule": "Vowel team 'ea' for long e sound",
+    "word_pattern": "CVVC",
+    "words": [
+      "bean",
+      "team",
+      "leaf",
+      "seal",
+      "heap",
+      "deal",
+      "seam",
+      "lean",
+      "mean",
+      "weak",
+      "reap",
+      "peak"
+    ]
+  },
+  {
+    "level_id": 23,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "R-controlled vowel 'ar'",
+    "word_pattern": "CVC or CVCC",
+    "words": [
+      "car",
+      "jar",
+      "far",
+      "bar",
+      "cart",
+      "park",
+      "dark",
+      "farm",
+      "star",
+      "hard"
+    ]
+  },
+  {
+    "level_id": 24,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "R-controlled vowel 'er'",
+    "word_pattern": "CVC or CVCC",
+    "words": [
+      "her",
+      "germ",
+      "verb",
+      "term",
+      "perk",
+      "perch",
+      "fern",
+      "stern",
+      "clerk",
+      "jerk"
+    ]
+  },
+  {
+    "level_id": 25,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "R-controlled vowel 'ir'",
+    "word_pattern": "CVC",
+    "words": [
+      "bird",
+      "girl",
+      "dirt",
+      "firm",
+      "shirt",
+      "chirp",
+      "shirk",
+      "whirr",
+      "sir",
+      "fir"
+    ]
+  },
+  {
+    "level_id": 26,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "R-controlled vowel 'or'",
+    "word_pattern": "CVC or CVCC",
+    "words": [
+      "for",
+      "nor",
+      "born",
+      "corn",
+      "port",
+      "fort",
+      "sort",
+      "cord",
+      "short",
+      "form"
+    ]
+  },
+  {
+    "level_id": 27,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "R-controlled vowel 'ur'",
+    "word_pattern": "CVC",
+    "words": [
+      "burn",
+      "turn",
+      "surf",
+      "burp",
+      "curb",
+      "hurl",
+      "lurk",
+      "murk",
+      "spur",
+      "curt"
+    ]
+  },
+  {
+    "level_id": 28,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "Diphthong 'oi'",
+    "word_pattern": "CVC",
+    "words": [
+      "BOIL",
+      "COIL",
+      "FOIL",
+      "SOIL",
+      "COIN",
+      "JOIN",
+      "LOIN",
+      "VOID",
+      "TOIL",
+      "ROIL"
+    ]
+  },
+  {
+    "level_id": 29,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "Diphthong 'oy'",
+    "word_pattern": "CVC",
+    "words": [
+      "boy",
+      "toy",
+      "joy",
+      "coy",
+      "soy",
+      "hoy",
+      "boys",
+      "toys",
+      "joys",
+      "coys"
+    ]
+  },
+  {
+    "level_id": 30,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "Diphthong 'ou'",
+    "word_pattern": "CVC or CVCC",
+    "words": [
+      "couch",
+      "loud",
+      "proud",
+      "sound",
+      "found",
+      "round",
+      "mouth",
+      "shout",
+      "cloud",
+      "count"
+    ]
+  },
+  {
+    "level_id": 31,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "Diphthong 'ow'",
+    "word_pattern": "CVC or CVCC",
+    "words": [
+      "cow",
+      "how",
+      "now",
+      "bow",
+      "vow",
+      "town",
+      "gown",
+      "down",
+      "howl",
+      "fowl"
+    ]
+  },
+  {
+    "level_id": 32,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "Multisyllable words with closed syllables",
+    "word_pattern": "CVC-CVC",
+    "words": [
+      "napkin",
+      "muffin",
+      "rabbit",
+      "puppet",
+      "basket",
+      "helmet",
+      "sunlit",
+      "tennis",
+      "hidden",
+      "button"
+    ]
+  },
+  {
+    "level_id": 33,
+    "difficulty": "INTERMEDIATE",
+    "phonics_rule": "Multisyllable words ending with consonant + le",
+    "word_pattern": "CVCle",
+    "words": [
+      "bubble",
+      "puddle",
+      "middle",
+      "little",
+      "bottle",
+      "battle",
+      "settle",
+      "rattle",
+      "apple",
+      "giggle"
+    ]
+  }
+]

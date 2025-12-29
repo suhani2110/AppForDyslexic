@@ -1,24 +1,29 @@
 import 'package:flutter_tts/flutter_tts.dart';
 
 class TtsService {
-  final FlutterTts _tts = FlutterTts();
+  static final TtsService _instance = TtsService._internal();
+  factory TtsService() => _instance;
 
-  Future<void> init() async {
-    await _tts.setLanguage("en-US");
-    await _tts.setSpeechRate(0.45); // dyslexia-friendly
-    await _tts.setPitch(1.0);
+  late FlutterTts _tts;
+
+  TtsService._internal() {
+    _tts = FlutterTts();
+    _configure();
+  }
+
+  void _configure() {
+    _tts.setLanguage("en-US");
+    _tts.setSpeechRate(0.45);
+    _tts.setPitch(1.0);
+    _tts.awaitSpeakCompletion(false); // 🔑 DO NOT BLOCK
   }
 
   Future<void> speak(String text) async {
-    await _tts.stop();
+    await _tts.stop(); // clear any queued audio
     await _tts.speak(text);
   }
 
   Future<void> stop() async {
     await _tts.stop();
-  }
-
-  void setCompletionHandler(VoidCallback callback) {
-    _tts.setCompletionHandler(callback);
   }
 }
