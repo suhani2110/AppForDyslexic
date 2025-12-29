@@ -5,7 +5,6 @@ import '../../widgets/canvas/drawing_canvas.dart';
 
 class WordPracticePage extends StatefulWidget {
   final String word;
-
   const WordPracticePage({super.key, required this.word});
 
   @override
@@ -14,26 +13,26 @@ class WordPracticePage extends StatefulWidget {
 
 class _WordPracticePageState extends State<WordPracticePage> {
   final TtsService _tts = TtsService();
-
-  Color backgroundColor = Colors.white;
+  Color bg = Colors.white;
   bool completed = false;
 
   @override
   void initState() {
     super.initState();
-    _loadProgress();
+    _load();
   }
 
-  Future<void> _loadProgress() async {
+  Future<void> _load() async {
     completed = await ProgressService.isCompleted(widget.word);
     setState(() {});
   }
 
   Future<void> _markCompleted() async {
-    if (completed) return;
-
     await ProgressService.markCompleted(widget.word);
     setState(() => completed = true);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("✅ Correct!")),
+    );
   }
 
   @override
@@ -56,51 +55,42 @@ class _WordPracticePageState extends State<WordPracticePage> {
         ],
       ),
       body: Container(
-        color: backgroundColor,
+        color: bg,
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // WORD
             Text(
               widget.word,
               style: const TextStyle(
-                fontSize: 42,
+                fontSize: 44,
                 fontWeight: FontWeight.bold,
               ),
             ),
-
-            const SizedBox(height: 12),
-
-            // BACKGROUND COLORS
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _colorButton(Colors.white),
-                _colorButton(Colors.yellow.shade100),
-                _colorButton(Colors.blue.shade50),
-                _colorButton(Colors.green.shade50),
+                _color(Colors.white),
+                _color(Colors.yellow.shade100),
+                _color(Colors.blue.shade50),
+                _color(Colors.green.shade50),
               ],
             ),
-
-            const SizedBox(height: 16),
-
-            // TTS
+            const SizedBox(height: 12),
             ElevatedButton.icon(
+              onPressed: () => _tts.speak(widget.word),
               icon: const Icon(Icons.volume_up),
               label: const Text("Hear Pronunciation"),
-              onPressed: () => _tts.speak(widget.word),
             ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              "Write the word:",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            const SizedBox(height: 12),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Write the word:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
             ),
-
             const SizedBox(height: 8),
-
-            // ✅ CANVAS (FIXED)
             Expanded(
               child: DrawingCanvas(
                 targetWord: widget.word,
@@ -113,19 +103,17 @@ class _WordPracticePageState extends State<WordPracticePage> {
     );
   }
 
-  Widget _colorButton(Color color) {
-    return GestureDetector(
-      onTap: () => setState(() => backgroundColor = color),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: Colors.black26),
+  Widget _color(Color c) => GestureDetector(
+        onTap: () => setState(() => bg = c),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: c,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.black26),
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_digital_ink_recognition/google_mlkit_digital_ink_recognition.dart';
-import '../../services/handwriting_service.dart';
 
 class DrawingCanvas extends StatefulWidget {
   final String targetWord;
@@ -17,117 +15,184 @@ class DrawingCanvas extends StatefulWidget {
 }
 
 class _DrawingCanvasState extends State<DrawingCanvas> {
-  final List<List<StrokePoint>> _strokes = [];
-  List<StrokePoint> _currentStroke = [];
-  bool _recognizing = false;
+  final List<Offset> _points = [];
+  late List<bool> _letterCorrect;
 
-  void _clearCanvas() {
+  Size _size = Size.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _letterCorrect = List.filled(widget.targetWord.length, false);
+  }
+
+  void _clear() {
     setState(() {
-      _strokes.clear();
-      _currentStroke.clear();
+      _points.clear();
+      _letterCorrect = List.filled(widget.targetWord.length, false);
     });
   }
 
-  Future<void> _submit() async {
-    if (_strokes.isEmpty) return;
+  bool _validate() {
+    final letters = widget.targetWord.toLowerCase();
+    final slots = letters.length;
+    final slotWidth = _size.width / slots;
 
-    setState(() => _recognizing = true);
+    final slotPoints = List.generate(slots, (_) => <Offset>[]);
 
-    final recognized = await HandwritingService.recognize(_strokes);
-
-    setState(() => _recognizing = false);
-
-    if (recognized == null) {
-      _show("Could not recognize handwriting ❌", false);
-      return;
+    for (final p in _points) {
+      final slot = (p.dx / slotWidth).floor().clamp(0, slots - 1);
+      slotPoints[slot].add(p);
     }
 
-    final isCorrect = recognized.trim().toLowerCase() ==
-        widget.targetWord.trim().toLowerCase();
+    bool allCorrect = true;
 
-    if (isCorrect) {
-      widget.onCorrect();
-      _show("Correct! ✅ ($recognized)", true);
-    } else {
-      _show("Incorrect ❌ You wrote \"$recognized\"", false);
+    for (int i = 0; i < slots; i++) {
+      final pts = slotPoints[i];
+      final letter = letters[i];
+
+      if (pts.length < 15) {
+        _letterCorrect[i] = false;
+        allCorrect = false;
+        continue;
+      }
+
+      final minY = pts.map((p) => p.dy).reduce((a, b) => a < b ? a : b);
+      final maxY = pts.map((p) => p.dy).reduce((a, b) => a > b ? a : b);
+      final heightRatio = (maxY - minY) / _size.height;
+
+      bool validHeight;
+
+      // Tall letters
+      if ("fthl".contains(letter)) {
+        validHeight = heightRatio > 0.45;
+      }
+      // Short letters
+      else {
+        validHeight = heightRatio < 0.65;
+      }
+
+      _letterCorrect[i] = validHeight;
+      if (!validHeight) allCorrect = false;
     }
-  }
 
-  void _show(String msg, bool success) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
+    setState(() {});
+    return allCorrect;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // DRAWING AREA
-        Container(
-          height: 220,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey, width: 2),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: GestureDetector(
-            onPanStart: (_) => _currentStroke = [],
-            onPanUpdate: (details) {
-              setState(() {
-                _currentStroke.add(
-                  StrokePoint(
-                    x: details.localPosition.dx,
-                    y: details.localPosition.dy,
-                    t: DateTime.now().millisecondsSinceEpoch,
+    return LayoutBuilder(builder: (context, constraints) {
+      _size = Size(constraints.maxWidth, constraints.maxHeight);
+      final slots = widget.targetWord.length;
+
+      return Column(
+        children: [
+          // ---------- SLOT GUIDES ----------
+          SizedBox(
+            height: 40,
+            child: Row(
+              children: List.generate(slots, (i) {
+                return Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: _letterCorrect[i] ? Colors.green : Colors.red,
+                        width: 2,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      widget.targetWord[i],
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black26,
+                      ),
+                    ),
                   ),
                 );
-              });
-            },
-            onPanEnd: (_) {
-              _strokes.add(_currentStroke);
-              _currentStroke = [];
-            },
-            child: CustomPaint(
-              painter: _CanvasPainter(_strokes),
-              size: Size.infinite,
+              }),
             ),
           ),
-        ),
 
-        const SizedBox(height: 12),
+          const SizedBox(height: 8),
 
-        // CONTROLS
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            OutlinedButton(
-              onPressed: _clearCanvas,
-              child: const Text("Clear"),
+          // ---------- CANVAS ----------
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black26, width: 2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: GestureDetector(
+                onPanUpdate: (details) {
+                  final box = context.findRenderObject() as RenderBox;
+                  final pos = box.globalToLocal(details.globalPosition);
+
+                  if (pos.dx >= 0 &&
+                      pos.dx <= _size.width &&
+                      pos.dy >= 0 &&
+                      pos.dy <= _size.height) {
+                    setState(() => _points.add(pos));
+                  }
+                },
+                onPanEnd: (_) => _points.add(Offset.zero),
+                child: CustomPaint(
+                  painter: _StrokePainter(_points),
+                  size: Size.infinite,
+                ),
+              ),
             ),
-            ElevatedButton(
-              onPressed: _recognizing ? null : _submit,
-              child: _recognizing
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text("Submit"),
-            ),
-          ],
-        ),
-      ],
-    );
+          ),
+
+          const SizedBox(height: 12),
+
+          // ---------- ACTIONS ----------
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _clear,
+                  child: const Text("Clear"),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_validate()) {
+                      widget.onCorrect();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Correct! ✅"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Some letters are incorrect ❌"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Submit"),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    });
   }
 }
 
-class _CanvasPainter extends CustomPainter {
-  final List<List<StrokePoint>> strokes;
-
-  _CanvasPainter(this.strokes);
+class _StrokePainter extends CustomPainter {
+  final List<Offset> points;
+  _StrokePainter(this.points);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -136,13 +201,9 @@ class _CanvasPainter extends CustomPainter {
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
 
-    for (final stroke in strokes) {
-      for (int i = 0; i < stroke.length - 1; i++) {
-        canvas.drawLine(
-          Offset(stroke[i].x, stroke[i].y),
-          Offset(stroke[i + 1].x, stroke[i + 1].y),
-          paint,
-        );
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != Offset.zero && points[i + 1] != Offset.zero) {
+        canvas.drawLine(points[i], points[i + 1], paint);
       }
     }
   }

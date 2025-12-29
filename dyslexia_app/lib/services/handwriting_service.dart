@@ -4,7 +4,9 @@ class HandwritingService {
   static final DigitalInkRecognizer _recognizer =
       DigitalInkRecognizer(languageCode: 'en-US');
 
-  static Future<String?> recognize(List<List<StrokePoint>> strokes) async {
+  static Future<String?> recognize(
+    List<List<StrokePoint>> strokes,
+  ) async {
     if (strokes.isEmpty) return null;
 
     final ink = Ink();
@@ -15,11 +17,17 @@ class HandwritingService {
       ink.strokes.add(stroke);
     }
 
-    final candidates = await _recognizer.recognize(ink);
+    try {
+      final candidates =
+          await _recognizer.recognize(ink).timeout(const Duration(seconds: 3));
 
-    if (candidates.isEmpty) return null;
+      if (candidates.isEmpty) return null;
 
-    return candidates.first.text;
+      return candidates.first.text;
+    } catch (e) {
+      // ⛔ timeout OR ML failure
+      return null;
+    }
   }
 
   static Future<void> dispose() async {
