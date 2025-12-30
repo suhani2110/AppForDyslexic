@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+
 import '../../services/tts_service.dart';
 import '../../services/progress_service.dart';
 import '../../widgets/canvas/drawing_canvas.dart';
+import '../../widgets/speech/speech_practice_widget.dart';
 
 class WordPracticePage extends StatefulWidget {
   final String word;
-  final List<String> words;
-  final int index;
+  final List<String> words; // full word list
+  final int index; // current word index
 
   const WordPracticePage({
     super.key,
@@ -21,28 +23,41 @@ class WordPracticePage extends StatefulWidget {
 
 class _WordPracticePageState extends State<WordPracticePage> {
   final TtsService _tts = TtsService();
-  final DrawingCanvasController _canvasController = DrawingCanvasController();
+
+  // default → green shade
+  Color backgroundColor = const Color(0xFFE8F5E9);
 
   bool writingDone = false;
   bool speechDone = false;
 
-  Color backgroundColor = const Color(0xFFEAF7E8); // green default
+  @override
+  void initState() {
+    super.initState();
+    _loadProgress();
+  }
+
+  Future<void> _loadProgress() async {
+    writingDone = await ProgressService.isWritingCompleted(widget.word);
+    speechDone = await ProgressService.isSpeechCompleted(widget.word);
+    setState(() {});
+  }
+
+  Future<void> _onWritingCorrect() async {
+    await ProgressService.markWritingCompleted(widget.word);
+    setState(() => writingDone = true);
+  }
+
+  Future<void> _onSpeechCorrect() async {
+    await ProgressService.markSpeechCompleted(widget.word);
+    setState(() => speechDone = true);
+  }
+
+  bool get fullyCompleted => writingDone && speechDone;
 
   @override
   void dispose() {
     _tts.stop();
     super.dispose();
-  }
-
-  Future<void> _checkFullyCompleted() async {
-    if (writingDone && speechDone) {
-      await ProgressService.markWordFullyCompleted(widget.word);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Word completed ✅")),
-        );
-      }
-    }
   }
 
   @override
@@ -52,20 +67,25 @@ class _WordPracticePageState extends State<WordPracticePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.word),
-        backgroundColor: const Color(0xFFEAF7E8),
+        backgroundColor: const Color(0xFFE8F5E9),
+        actions: [
+          if (fullyCompleted)
+            const Icon(Icons.check_circle, color: Colors.green),
+          const SizedBox(width: 12),
+        ],
       ),
       body: Container(
         color: backgroundColor,
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ---------- WORD ----------
             Center(
               child: Text(
                 widget.word,
                 style: const TextStyle(
-                  fontSize: 42,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -77,23 +97,20 @@ class _WordPracticePageState extends State<WordPracticePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: widget.word
-                  .toUpperCase()
                   .split('')
                   .map(
                     (c) => Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(6),
                         border: Border.all(color: Colors.black26),
                       ),
                       child: Text(
-                        c,
+                        c.toUpperCase(),
                         style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                   )
@@ -102,55 +119,34 @@ class _WordPracticePageState extends State<WordPracticePage> {
 
             const SizedBox(height: 16),
 
-            // ---------- HEAR (TTS) ----------
+            // ---------- BACKGROUND COLORS ----------
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _colorButton(Colors.white),
+                _colorButton(Colors.yellow.shade100),
+                _colorButton(Colors.blue.shade50),
+                _colorButton(const Color(0xFFE8F5E9)),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // ---------- TTS ----------
             Center(
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.volume_up_rounded),
+                icon: const Icon(Icons.volume_up),
                 label: const Text("Hear"),
                 onPressed: () => _tts.speak(widget.word),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade600,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                ),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            // ---------- SPEECH (placeholder UI, logic already wired) ----------
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.mic,
-                    color: speechDone ? Colors.green : Colors.grey,
-                    size: 32,
-                  ),
-                  onPressed: () async {
-                    // STT logic already handled elsewhere
-                    setState(() => speechDone = true);
-                    await _checkFullyCompleted();
-                  },
-                ),
-                const SizedBox(width: 12),
-                IconButton(
-                  icon: const Icon(Icons.play_arrow),
-                  onPressed: () {},
-                ),
-                const SizedBox(width: 12),
-                ElevatedButton(
-                  onPressed: () async {
-                    setState(() => speechDone = true);
-                    await ProgressService.markSpeechCompleted(widget.word);
-                    await _checkFullyCompleted();
-                  },
-                  child: const Text("Submit"),
-                ),
-              ],
+            // ---------- SPEECH ----------
+            SpeechPracticeWidget(
+              targetWord: widget.word,
+              onCorrect: _onSpeechCorrect,
             ),
 
             const SizedBox(height: 20),
@@ -167,17 +163,12 @@ class _WordPracticePageState extends State<WordPracticePage> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  border: Border.all(color: Colors.black26, width: 2),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.black38, width: 1.5),
                 ),
                 child: DrawingCanvas(
-                  controller: _canvasController,
                   targetWord: widget.word,
-                  onCorrect: () async {
-                    setState(() => writingDone = true);
-                    await ProgressService.markWritingCompleted(widget.word);
-                    await _checkFullyCompleted();
-                  },
+                  onCorrect: _onWritingCorrect,
                 ),
               ),
             ),
@@ -189,40 +180,58 @@ class _WordPracticePageState extends State<WordPracticePage> {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: _canvasController.clear,
+                    onPressed: () => DrawingCanvasController.clear?.call(),
                     child: const Text("Clear"),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _canvasController.submit,
+                    onPressed: fullyCompleted ? null : () {},
                     child: const Text("Submit"),
                   ),
                 ),
                 if (!isLastWord) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => WordPracticePage(
-                              word: widget.words[widget.index + 1],
-                              words: widget.words,
-                              index: widget.index + 1,
-                            ),
-                          ),
-                        );
-                      },
+                      onPressed: fullyCompleted
+                          ? () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => WordPracticePage(
+                                    word: widget.words[widget.index + 1],
+                                    words: widget.words,
+                                    index: widget.index + 1,
+                                  ),
+                                ),
+                              );
+                            }
+                          : null,
                       child: const Text("Next"),
                     ),
                   ),
-                ],
+                ]
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _colorButton(Color color) {
+    return GestureDetector(
+      onTap: () => setState(() => backgroundColor = color),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: Colors.black26),
         ),
       ),
     );

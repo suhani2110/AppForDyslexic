@@ -6,6 +6,8 @@ class OcrService {
       TextRecognizer(script: TextRecognitionScript.latin);
 
   Future<String> extractText(File imageFile) async {
+    // debugPrint("OCR INPUT FILE: ${file.path}");
+
     final inputImage = InputImage.fromFile(imageFile);
     final RecognizedText recognizedText =
         await _recognizer.processImage(inputImage);

@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../services/ocr_service.dart';
 import 'scan_result_page.dart';
+import 'manual_crop_page.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
@@ -18,7 +19,6 @@ class _CameraPageState extends State<CameraPage> {
   File? _image;
   bool _isProcessing = false;
 
-  // ---------- Capture from camera ----------
   Future<void> _captureImage() async {
     final XFile? picked = await _picker.pickImage(source: ImageSource.camera);
 
@@ -29,7 +29,6 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  // ---------- Pick from gallery ----------
   Future<void> _pickFromGallery() async {
     final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -40,39 +39,41 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  // ---------- OCR + safe navigation ----------
   Future<void> _onNextPressed() async {
     if (_image == null) return;
 
-    setState(() {
-      _isProcessing = true;
-    });
+    // 🔹 Step 1: Go to manual crop page
+    final File? cropped = await Navigator.push<File>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ManualCropPage(image: _image!),
+      ),
+    );
+
+    if (cropped == null) return;
+
+    // 🔹 Step 2: OCR
+    setState(() => _isProcessing = true);
 
     final ocrService = OcrService();
-    final extractedText = await ocrService.extractText(_image!);
+    final extractedText = await ocrService.extractText(cropped);
 
-    setState(() {
-      _isProcessing = false;
-    });
+    setState(() => _isProcessing = false);
 
-    // ✅ SAFE navigation after frame layout
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
+    if (!mounted) return;
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => ScanResultPage(text: extractedText),
-        ),
-      );
-    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ScanResultPage(text: extractedText),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Scan Page"),
-      ),
+      appBar: AppBar(title: const Text("Scan Page")),
       body: Column(
         children: [
           Expanded(
@@ -82,10 +83,7 @@ class _CameraPageState extends State<CameraPage> {
                   : Image.file(_image!),
             ),
           ),
-
           const SizedBox(height: 12),
-
-          // ---------- Buttons ----------
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -101,9 +99,7 @@ class _CameraPageState extends State<CameraPage> {
               ),
             ],
           ),
-
           const SizedBox(height: 12),
-
           ElevatedButton(
             onPressed:
                 (_image == null || _isProcessing) ? null : _onNextPressed,
@@ -115,7 +111,6 @@ class _CameraPageState extends State<CameraPage> {
                   )
                 : const Text("Next"),
           ),
-
           const SizedBox(height: 20),
         ],
       ),
