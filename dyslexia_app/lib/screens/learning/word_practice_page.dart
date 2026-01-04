@@ -26,7 +26,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
   bool writingDone = false;
   bool speechDone = false;
 
-  Color backgroundColor = const Color(0xFFEAF7E8); // green default
+  Color backgroundColor = const Color(0xFFEAF7E8); // default green
 
   @override
   void dispose() {
@@ -52,7 +52,9 @@ class _WordPracticePageState extends State<WordPracticePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.word),
-        backgroundColor: const Color(0xFFEAF7E8),
+        backgroundColor: Colors.white, // ✅ DIFFERENT FROM PAGE BG
+        foregroundColor: Colors.black,
+        elevation: 1,
       ),
       body: Container(
         color: backgroundColor,
@@ -60,6 +62,19 @@ class _WordPracticePageState extends State<WordPracticePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // ---------- BACKGROUND COLOR OPTIONS ----------
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _bgOption(const Color(0xFFEAF7E8)),
+                _bgOption(Colors.white),
+                _bgOption(const Color(0xFFFFF3CD)),
+                _bgOption(const Color(0xFFE3F2FD)),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
             // ---------- WORD ----------
             Center(
               child: Text(
@@ -102,7 +117,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
 
             const SizedBox(height: 16),
 
-            // ---------- HEAR (TTS) ----------
+            // ---------- HEAR ----------
             Center(
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.volume_up_rounded),
@@ -120,7 +135,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
 
             const SizedBox(height: 16),
 
-            // ---------- SPEECH (placeholder UI, logic already wired) ----------
+            // ---------- SPEECH UI ----------
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -131,7 +146,6 @@ class _WordPracticePageState extends State<WordPracticePage> {
                     size: 32,
                   ),
                   onPressed: () async {
-                    // STT logic already handled elsewhere
                     setState(() => speechDone = true);
                     await _checkFullyCompleted();
                   },
@@ -223,6 +237,22 @@ class _WordPracticePageState extends State<WordPracticePage> {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bgOption(Color color) {
+    return GestureDetector(
+      onTap: () => setState(() => backgroundColor = color),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.black26),
         ),
       ),
     );

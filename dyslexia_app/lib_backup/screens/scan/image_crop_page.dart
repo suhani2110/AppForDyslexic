@@ -10,10 +10,12 @@ class ImageCropPage extends StatelessWidget {
   Future<void> _crop(BuildContext context) async {
     final CroppedFile? cropped = await ImageCropper().cropImage(
       sourcePath: image.path,
+
+      // 🔴 THESE SETTINGS ARE CRITICAL
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Crop Image',
-          toolbarColor: Colors.blue.shade600, // ✅ BLUE
+          toolbarColor: Colors.black,
           toolbarWidgetColor: Colors.white,
           hideBottomControls: false,
           lockAspectRatio: false,
@@ -25,6 +27,7 @@ class ImageCropPage extends StatelessWidget {
       ],
     );
 
+    // 🚨 USER PRESSED BACK / CROP FAILED
     if (cropped == null) {
       Navigator.pop(context);
       return;
@@ -36,19 +39,11 @@ class ImageCropPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Crop Image"),
-        backgroundColor: Colors.blue.shade600, // ✅ BLUE
-        foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(title: const Text("Crop Image")),
       body: Column(
         children: [
           Expanded(
-            child: Image.file(
-              image,
-              fit: BoxFit.cover, // ✅ FULL SCREEN DEFAULT
-              width: double.infinity,
-            ),
+            child: Image.file(image, fit: BoxFit.contain),
           ),
           Padding(
             padding: const EdgeInsets.all(16),
