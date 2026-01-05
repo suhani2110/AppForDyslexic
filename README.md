@@ -65,6 +65,7 @@ AI-generated practice words for weak areas
 
 ### Dashboard
 
+<img src="screenshots/dashboard.jpeg" width="300"/>
 ![Dashboard](screenshots/dashboard.jpeg)
 
 ### Learning Module – Word Practice
