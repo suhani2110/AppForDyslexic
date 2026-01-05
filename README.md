@@ -66,19 +66,18 @@ AI-generated practice words for weak areas
 ### Dashboard
 
 <img src="screenshots/dashboard.jpeg" width="300"/>
-![Dashboard](screenshots/dashboard.jpeg)
 
 ### Learning Module – Word Practice
 
-![Word Practice](screenshots/wordpractice2.jpeg)
+<img src="screenshots/wordpractice2.jpeg" width="300"/>
 
 ### Scan & Convert (Manual Crop for Accuracy)
 
-![Scan and Convert](screenshots/crop.jpeg)
+<img src="screenshots/crop.jpeg" width="300"/>
 
 ### Handwriting Practice
 
-![Handwriting Canvas](screenshots/scanoutput.jpeg)
+<img src="screenshots/scanoutput.jpeg" width="300"/>
 
 🛠️ Tech Stack
 
